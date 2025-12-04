@@ -5,3 +5,7 @@ spring:
     username: your_username
     password: your_password
     driver-class-name: org.postgresql.Driver
+
+jwt:
+  secret: your_jwt_secret_key_here_minimum_256_bits
+  expiration: 86400000
