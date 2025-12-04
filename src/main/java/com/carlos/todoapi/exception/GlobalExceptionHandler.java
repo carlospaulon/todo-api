@@ -1,9 +1,9 @@
 package com.carlos.todoapi.exception;
 
 import com.carlos.todoapi.dto.response.ErrorResponse;
-import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -50,5 +50,17 @@ public class GlobalExceptionHandler {
         });
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+    }
+
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ErrorResponse> handleBadCredentialException(BadCredentialsException ex) {
+        ErrorResponse error = new ErrorResponse(
+                ex.getMessage(), // ou Invalid Username or password
+                LocalDateTime.now(),
+                HttpStatus.UNAUTHORIZED.value()
+        );
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
     }
 }

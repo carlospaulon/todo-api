@@ -1,6 +1,8 @@
 package com.carlos.todoapi.controller;
 
+import com.carlos.todoapi.dto.request.LoginRequest;
 import com.carlos.todoapi.dto.request.RegisterRequest;
+import com.carlos.todoapi.dto.response.LoginResponse;
 import com.carlos.todoapi.dto.response.RegisterResponse;
 import com.carlos.todoapi.service.AuthService;
 import jakarta.validation.Valid;
@@ -26,5 +28,11 @@ public class AuthController {
         RegisterResponse response = authService.registerUser(registerRequest);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> loginUser(@RequestBody @Valid LoginRequest loginRequest) {
+        LoginResponse response = authService.loginUser(loginRequest);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }
