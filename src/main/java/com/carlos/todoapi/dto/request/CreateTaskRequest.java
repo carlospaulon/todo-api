@@ -23,7 +23,7 @@ public record CreateTaskRequest(
 
 ) {
 
-    //TODO: Entender melhor este construtor
+    //Compact constructor
     public CreateTaskRequest {
         if (status == null) {
             status = TaskStatus.PENDING;
