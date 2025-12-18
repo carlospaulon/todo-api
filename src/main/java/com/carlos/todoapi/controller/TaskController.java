@@ -9,6 +9,10 @@ import com.carlos.todoapi.entity.TaskStatus;
 import com.carlos.todoapi.service.TaskService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -38,11 +42,11 @@ public class TaskController {
     }
 
     @GetMapping
-    public ResponseEntity<List<TaskResponse>> getTasks(@RequestParam(required = false) TaskStatus status) {
+    public ResponseEntity<Page<TaskResponse>> getTasks(@RequestParam(required = false) TaskStatus status, @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC)Pageable pageable) {
 
         String username = getCurrentUsername();
 
-        List<TaskResponse> tasks = taskService.getTasksByUserAndStatus(username, status);
+        Page<TaskResponse> tasks = taskService.getTasksByUserAndStatus(username, status, pageable);
 
         return ResponseEntity.status(HttpStatus.OK).body(tasks);
     }
@@ -68,8 +72,7 @@ public class TaskController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
 
     }
-    //todo: atualizar task not found
-    //todo: patch não está funcionando
+
     @PatchMapping("/{id}/status")
     public ResponseEntity<TaskResponse> updateTaskStatus(@PathVariable Long id, @RequestBody @Valid UpdateStatusRequest request) {
 

@@ -2,7 +2,6 @@ package com.carlos.todoapi.dto.response;
 
 import com.carlos.todoapi.entity.TaskPriority;
 import com.carlos.todoapi.entity.TaskStatus;
-import com.carlos.todoapi.entity.User;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

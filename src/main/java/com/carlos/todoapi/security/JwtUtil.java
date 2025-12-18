@@ -3,7 +3,6 @@ package com.carlos.todoapi.security;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 
-import lombok.Data;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
