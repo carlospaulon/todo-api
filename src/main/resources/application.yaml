@@ -23,3 +23,13 @@ server:
   error:
     include-message: always
     include-binding-errors: always
+
+logging:
+  level:
+    root: INFO
+    com.carlos.todoapi: DEBUG
+    org.springframework.security: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%level] [%thread] %logger{36} - %msg%n"
