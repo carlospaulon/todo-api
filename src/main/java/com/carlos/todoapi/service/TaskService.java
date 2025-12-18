@@ -14,6 +14,8 @@ import com.carlos.todoapi.repository.TaskRepository;
 import com.carlos.todoapi.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 
@@ -34,10 +36,8 @@ public class TaskService {
         this.taskMapper = taskMapper;
     }
 
-    //Certo
     public TaskResponse createTask(CreateTaskRequest request, String username) {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
+        User user = getCurrentUser(username);
 
         Task task = taskMapper.toEntity(request, user);
 
@@ -46,38 +46,23 @@ public class TaskService {
         return taskMapper.toResponse(taskSaved);
     }
 
-    public List<TaskResponse> getTasksByUser(String username) {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
+    public Page<TaskResponse> getTasksByUser(String username, Pageable pageable) {
+        User user = getCurrentUser(username);
+        Page<Task> tasks = taskRepository.findByUserId(user.getId(), pageable);
 
-        List<Task> tasks = taskRepository.findByUserId(user.getId());
-
-        return tasks.stream()
-                .map(taskMapper::toResponse)
-                .collect(Collectors.toList());
+        return tasks.map(taskMapper::toResponse);
 
     }
 
     public TaskResponse getTaskById(Long id, String username) {
-        Task taskById = taskRepository.findById(id)
-                .orElseThrow(() -> new TaskNotFoundException("Task by ID not found"));
-
-        if (!taskById.getUser().getUsername().equals(username)) {
-            throw new UnauthorizedAccessException("Acesso não autorizado");
-        }
+        Task taskById = getTaskAndVerifyOwnership(id, username);
 
         return taskMapper.toResponse(taskById);
 
     }
 
-    //Method update - watch out with repetive code
     public TaskResponse updateTask(Long id, UpdateTaskRequest request, String username) {
-        Task task = taskRepository.findById(id)
-                .orElseThrow(() -> new TaskNotFoundException("Task by ID not found"));
-
-        if (!task.getUser().getUsername().equals(username)) {
-            throw new UnauthorizedAccessException("Acesso não autorizado");
-        }
+        Task task = getTaskAndVerifyOwnership(id, username);
 
         if (request.title() != null) {
             task.setTitle(request.title());
@@ -106,16 +91,9 @@ public class TaskService {
     }
 
     public TaskResponse updateTaskStatus(Long id, TaskStatus status, String username) {
-        Task task = taskRepository.findById(id)
-                .orElseThrow(() -> new TaskNotFoundException("Task by ID not found"));
+        Task task = getTaskAndVerifyOwnership(id, username);
 
-        if (!task.getUser().getUsername().equals(username)) {
-            throw new UnauthorizedAccessException("Acesso não autorizado");
-        }
-
-        //not necessary verify if it's null?
         task.setStatus(status);
-
         Task taskSaved = taskRepository.save(task);
 
         return taskMapper.toResponse(taskSaved);
@@ -124,32 +102,45 @@ public class TaskService {
 
     public void deleteTask(Long id, String username) {
 
-        //method to not repeat code?
-        Task task = taskRepository.findById(id)
+        Task task = getTaskAndVerifyOwnership(id, username);
+        taskRepository.delete(task);
+
+    }
+
+    public Page<TaskResponse> getTasksByUserAndStatus(String username, TaskStatus status, Pageable pageable) {
+        User user = getCurrentUser(username);
+
+        Page<Task> tasks;
+
+        if (status == null) {
+            tasks = taskRepository.findByUserId(user.getId(), pageable);
+        } else {
+            tasks = taskRepository.findByUserIdAndStatus(user.getId(), status, pageable);
+        }
+
+        return tasks.map(taskMapper::toResponse);
+    }
+
+
+    //Utility methods
+    private User getCurrentUser(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+    }
+
+    private Task getCurrentTask(Long id) {
+        return taskRepository.findById(id)
                 .orElseThrow(() -> new TaskNotFoundException("Task by ID not found"));
+    }
+
+    private Task getTaskAndVerifyOwnership(Long id, String username) {
+        Task task = getCurrentTask(id);
 
         if (!task.getUser().getUsername().equals(username)) {
             throw new UnauthorizedAccessException("Acesso não autorizado");
         }
 
-        taskRepository.delete(task); //ou por id, entender qual o melhor?
-
+        return task;
     }
 
-    public List<TaskResponse> getTasksByUserAndStatus(String username, TaskStatus status) {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
-
-        List<Task> tasks = null;
-
-        if (status == null) {
-            tasks = taskRepository.findByUserId(user.getId());
-        } else {
-            tasks = taskRepository.findByUserIdAndStatus(user.getId(), status);
-        }
-
-        return tasks.stream()
-                .map(taskMapper::toResponse)
-                .collect(Collectors.toList());
-    }
 }
