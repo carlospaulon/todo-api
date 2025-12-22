@@ -59,6 +59,13 @@ public class SecurityConfig {
                 //rotas + login e register públicos e resto protegido
                 .authorizeHttpRequests(auth -> auth.requestMatchers("/api/auth/**")
                         .permitAll()
+
+                        .requestMatchers(
+                                "/swagger-ui/**",
+                                "/swagger-ui.html", //TODO: review if i can do that
+                                "/v3/api-docs/**"
+                        ).permitAll()
+
                         .anyRequest()
                         .authenticated()
                 )

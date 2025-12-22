@@ -8,6 +8,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class CorsConfig {
 
+    //what does?
     @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
@@ -20,7 +21,7 @@ public class CorsConfig {
                                 "http://localhost:4200", //angular
                                 "http://localhost:5173"  //vite
                         )
-                        .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
+                        .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS") //Options is working?
                         .allowedHeaders("*")
                         .allowCredentials(true)
                         .maxAge(3600);
