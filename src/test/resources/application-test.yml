@@ -1,0 +1,38 @@
+spring:
+  application:
+    name: todoapi-test
+
+  datasource:
+    url: jdbc:h2:mem:testdb;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DEFAULT_NULL_ORDERING=HIGH
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        format_sql: false
+
+  flyway:
+    enabled: false
+
+  h2:
+    console:
+      enabled: false
+
+jwt:
+  # Secret used only for tests
+  # Not used in dev or prod environments
+  secret: cmokzQQenaYRTzoaCx/hW8luPFqFoRbkRLaJlN8m5Hs=
+  expiration: 3600000
+
+logging:
+  level:
+    root: ERROR
+    com.carlos.todoapi: INFO
+    org.springframework.security: ERROR
+    org.hibernate: ERROR
