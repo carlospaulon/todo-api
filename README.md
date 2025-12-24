@@ -722,6 +722,11 @@ Interactive documentation available via Swagger UI at:
 
 ---
 
+## 📄 License
+[MIT](LICENSE)
+
+---
+
 ## Author
 
 **Carlos Paulon**  
