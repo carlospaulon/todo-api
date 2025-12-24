@@ -722,7 +722,7 @@ Interactive documentation available via Swagger UI at:
 
 ---
 
-## 📄 License
+## License
 [MIT](LICENSE)
 
 ---
