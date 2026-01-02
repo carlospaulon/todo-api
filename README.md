@@ -29,7 +29,7 @@ Complete task management system (To-Do List) with JWT authentication developed u
 
 ## About
 
-RESTful API for task management with a complete authentication system, built as a study project for Spring Boot, Spring
+REST API for task management with a complete authentication system, built as a study project for Spring Boot, Spring
 Security, and JWT.
 
 ### Highlights:
