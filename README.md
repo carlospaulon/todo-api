@@ -23,6 +23,7 @@ Complete task management system (To-Do List) with JWT authentication developed u
 - [Tests](#tests)
 - [API Endpoints](#api-endpoints)
 - [Swagger](#swagger)
+- [License](#license)
 - [Author](#author)
 
 ---
